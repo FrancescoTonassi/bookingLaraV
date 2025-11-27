@@ -15,7 +15,7 @@ Route::get('/hotels/{hotel}', [HotelController::class, 'show'])
     ->name('hotels.show');
 
 // Rotte auth generate da Breeze/Jetstream
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';
 
 // Rotte riservate all'utente loggato
 Route::middleware('auth')->group(function () {
