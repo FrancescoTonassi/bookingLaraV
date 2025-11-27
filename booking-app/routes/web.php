@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\HotelController as AdminHotelController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\AdminDashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\AdminHotelController as AdminHotelController;
+use App\Http\Controllers\Admin\AdminUserController as AdminUserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -30,12 +30,12 @@ Route::middleware('auth')->group(function () {
 });
 
 // AREA ADMIN
-/*Route::middleware(['auth', 'admin'])
+Route::middleware(['auth', 'admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/', [DashboardController::class, 'index'])
+        Route::get('/', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
         // gestione hotel
