@@ -1,58 +1,29 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HotelController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\AdminDashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\AdminHotelController as AdminHotelController;
-use App\Http\Controllers\Admin\AdminUserController as AdminUserController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HotelController as AdminHotelController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Dettaglio hotel (visibile a tutti)
-Route::get('/hotels/{hotel}', [HotelController::class, 'show'])
-    ->name('hotels.show');
 
-// Rotte auth generate da Breeze/Jetstream
-//require __DIR__.'/auth.php';
+//Route::get('/', function () {
+//    return view('welcome');
+//});
 
-// Rotte riservate all'utente loggato
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
-
-    // Effettua una prenotazione per un hotel
-    Route::post('/hotels/{hotel}/book', [HotelController::class, 'book'])
-        ->name('hotels.book');
-
-    // Pagina profilo + prenotazioni
-    Route::get('/profile', [ProfileController::class, 'index'])
-        ->name('profile.index');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// AREA ADMIN
-Route::middleware(['auth', 'admin'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-
-        Route::get('/', [AdminDashboardController::class, 'index'])
-            ->name('dashboard');
-
-        // gestione hotel
-        Route::get('/hotels', [AdminHotelController::class, 'index'])->name('hotels.index');
-        Route::get('/hotels/create', [AdminHotelController::class, 'create'])->name('hotels.create');
-        Route::post('/hotels', [AdminHotelController::class, 'store'])->name('hotels.store');
-        Route::get('/hotels/{hotel}/edit', [AdminHotelController::class, 'edit'])->name('hotels.edit');
-        Route::put('/hotels/{hotel}', [AdminHotelController::class, 'update'])->name('hotels.update');
-        Route::delete('/hotels/{hotel}', [AdminHotelController::class, 'destroy'])->name('hotels.destroy');
-
-        // visualizzazione prenotazioni di un hotel
-        Route::get('/hotels/{hotel}/bookings', [AdminHotelController::class, 'bookings'])
-            ->name('hotels.bookings');
-
-        // gestione utenti
-        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-        Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-    });
+require __DIR__.'/auth.php';
