@@ -1,28 +1,36 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Profilo')
+@section('title', 'Gestione Hotel')
 
 @section('content')
-<h1>Profilo utente</h1>
+<h1>Gestione Hotel</h1>
 
-<p>Nome: {{ $user->name }}</p>
-<p>Email: {{ $user->email }}</p>
+<a href="{{ route('admin.hotels.create') }}">Aggiungi nuovo hotel</a>
 
-<h2>Prenotazioni effettuate</h2>
-
-<ul>
-@forelse($bookings as $booking)
-    <li>
-        <a href="{{ route('hotels.show', $booking->hotel) }}">
-            {{ $booking->hotel->name }}
-        </a>
-        <span>
-            ({{ $booking->check_in }} → {{ $booking->check_out }},
-            ospiti: {{ $booking->guests }})
-        </span>
-    </li>
-@empty
-    <li>Nessuna prenotazione.</li>
-@endforelse
-</ul>
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Città</th>
+            <th>Azioni</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach($hotels as $hotel)
+        <tr>
+            <td>{{ $hotel->name }}</td>
+            <td>{{ $hotel->city }}</td>
+            <td>
+                <a href="{{ route('admin.hotels.edit', $hotel) }}">Modifica</a>
+                <a href="{{ route('admin.hotels.bookings', $hotel) }}">Prenotazioni</a>
+                <form action="{{ route('admin.hotels.destroy', $hotel) }}" method="POST" style="display:inline" onsubmit="return confirm('Eliminare questo hotel?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">Elimina</button>
+                </form>
+            </td>
+        </tr>
+    @endforeach
+    </tbody>
+</table>
 @endsection
