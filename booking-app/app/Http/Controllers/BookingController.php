@@ -9,13 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
-    // Salva una prenotazione
-    public function store($hotel_id, Request $request)
+    public function store(Hotel $hotel, Request $request)
     {
-        // Verifica che l'hotel esista
-        $hotel = Hotel::findOrFail($hotel_id);
-
-        // valida i dati del form
         $data = $request->validate([
             'check_in'  => ['required', 'date'],
             'check_out' => ['required', 'date', 'after_or_equal:check_in'],
@@ -32,13 +27,6 @@ class BookingController extends Controller
             'notes'     => $data['notes'] ?? null,
         ]);
 
-    return redirect()->back()->with('success', 'Prenotazione effettuata con successo!');
+        return back()->with('success', 'Prenotazione effettuata con successo!');
+    }
 }
-
-// Mostra le prenotazioni dell'utente autenticato
-/*public function index()
-    {
-        $bookings = Booking::where('user_id', Auth::id())->with('hotel')->get();
-        return view('bookings.index', compact('bookings'));
-    }*/
-}   

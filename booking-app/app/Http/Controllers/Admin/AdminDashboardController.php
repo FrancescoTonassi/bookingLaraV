@@ -11,9 +11,9 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $hotelCount = Hotel::count();
-        $userCount  = User::count();
-        $bookingCount = Booking::count();
+        $hotelCount   = Hotel::count();
+        $userCount    = User::count();
+        $bookingCount = Booking::count(); // se lo usi in blade
 
         return view('admin.dashboard', compact('hotelCount', 'userCount', 'bookingCount'));
     }

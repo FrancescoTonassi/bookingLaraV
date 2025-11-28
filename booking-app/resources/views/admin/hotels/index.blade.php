@@ -23,7 +23,7 @@
             <td>
                 <a href="{{ route('admin.hotels.edit', $hotel) }}">Modifica</a>
                 <a href="{{ route('admin.hotels.bookings', $hotel) }}">Prenotazioni</a>
-                <form action="{{ route('admin.hotels.destroy', $hotel) }}" method="POST" style="display:inline" onsubmit="return confirm('Eliminare questo hotel?');">
+                <form action="{{ route('admin.hotels.delete', $hotel) }}" method="POST" style="display:inline" onsubmit="return confirm('Eliminare questo hotel?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit">Elimina</button>

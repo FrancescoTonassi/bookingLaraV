@@ -10,8 +10,8 @@
 <body>
 <nav>
     <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-    <a href="{{ route('admin.hotels') }}">Hotel</a>
-    <a href="{{ route('admin.users') }}">Utenti</a>
+    <a href="{{ route('admin.hotels.index') }}">Hotel</a>
+    <a href="{{ route('admin.users.index') }}">Utenti</a>
     <a href="{{ route('home') }}">Torna al sito</a>
 </nav>
 

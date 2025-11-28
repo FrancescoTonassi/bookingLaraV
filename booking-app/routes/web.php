@@ -1,74 +1,103 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\Admin\AdminHotelController as AdminHotelController;
-use App\Http\Controllers\Admin\AdminUserController as AdminUserController;
-use App\Http\Controllers\Admin\AdminDashboardController as AdminDashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminHotelController;
+use App\Http\Controllers\Admin\AdminUserController;
 
+// ======================
+// ROTTE PUBBLICHE
+// ======================
 
-//rotte senza login
+// Home con lista hotel
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/hotels/{id}', [HotelController::class, 'show'])->name('hotels.show');
+// Dettaglio singolo hotel
+Route::get('/hotels/{hotel}', [HotelController::class, 'show'])->name('hotels.show');
 
+// Ricerca hotel
 Route::get('/search', [HotelController::class, 'search'])->name('hotels.search');
 
+// ======================
+// ROTTE CON LOGIN (UTENTE NORMALE)
+// ======================
 
-//rotte con login
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
 
-    // PRENOTAZIONI (solo utenti loggati)
-    Route::post('/book/{hotel_id}', [BookingController::class, 'store'])->name('book.store');
+    // Effettua una prenotazione per un hotel
+    Route::post('/hotels/{hotel}/book', [BookingController::class, 'store'])
+        ->name('book.store');
 
-    // PROFILO UTENTE
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    // Pagina PROFILO personalizzata (info + prenotazioni)
+    Route::get('/profile', [ProfileController::class, 'index'])
+        ->name('profile');
 
-    // LOGOUT (se serve)
-    // Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-
+    // Rotte generate da Breeze per modificare il profilo
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 });
 
+// Dashboard standard di Breeze (puoi lasciarla o ignorarla)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// ======================
+// ROTTE ADMIN (auth + admin)
+// ======================
 
-
-// ROTTE ADMIN (login + admin)
 Route::middleware(['auth', 'admin'])->group(function () {
 
-    // DASHBOARD ADMIN
-    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    // Dashboard admin
+    Route::get('/admin', [AdminDashboardController::class, 'index'])
+        ->name('admin.dashboard');
 
-    // LISTA HOTEL ADMIN
-    Route::get('/admin/hotels', [AdminHotelController::class, 'hotels'])->name('admin.hotels');
+    // Lista hotel
+    Route::get('/admin/hotels', [AdminHotelController::class, 'index'])
+        ->name('admin.hotels.index');
 
-    // AGGIUNTA HOTEL
-    Route::get('/admin/hotels/create', [AdminHotelController::class, 'createHotel'])->name('admin.hotels.create');
-    Route::post('/admin/hotels/store', [AdminHotelController::class, 'storeHotel'])->name('admin.hotels.store');
+    // Crea hotel
+    Route::get('/admin/hotels/create', [AdminHotelController::class, 'create'])
+        ->name('admin.hotels.create');
+    Route::post('/admin/hotels', [AdminHotelController::class, 'store'])
+        ->name('admin.hotels.store');
 
-    // MODIFICA HOTEL
-    Route::get('/admin/hotels/{id}/edit', [AdminHotelController::class, 'editHotel'])->name('admin.hotels.edit');
-    Route::post('/admin/hotels/{id}/update', [AdminHotelController::class, 'updateHotel'])->name('admin.hotels.update');
+    // Modifica hotel
+    Route::get('/admin/hotels/{hotel}/edit', [AdminHotelController::class, 'edit'])
+        ->name('admin.hotels.edit');
+    Route::put('/admin/hotels/{hotel}', [AdminHotelController::class, 'update'])
+        ->name('admin.hotels.update');
 
-    // ELIMINA HOTEL
-    Route::delete('/admin/hotels/{id}', [AdminHotelController::class, 'deleteHotel'])->name('admin.hotels.delete');
+    // Elimina hotel
+    Route::delete('/admin/hotels/{hotel}', [AdminHotelController::class, 'destroy'])
+        ->name('admin.hotels.delete');
 
-    // VISUALIZZA PRENOTAZIONI DI UN HOTEL
-    Route::get('/admin/hotels/{id}/bookings', [AdminHotelController::class, 'hotelBookings'])->name('admin.hotels.bookings');
+    // Prenotazioni di un hotel
+    Route::get('/admin/hotels/{hotel}/bookings', [AdminHotelController::class, 'bookings'])
+        ->name('admin.hotels.bookings');
 
-    // LISTA UTENTI
-    Route::get('/admin/users', [AdminUserController::class, 'users'])->name('admin.users');
+    // Lista utenti
+    Route::get('/admin/users', [AdminUserController::class, 'index'])
+        ->name('admin.users.index');
+
+        // ✨ MODIFICA UTENTE (form)
+    Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])
+        ->name('admin.users.edit');
+
+    // ✨ SALVA MODIFICA UTENTE
+    Route::put('/admin/users/{user}', [AdminUserController::class, 'update'])
+        ->name('admin.users.update');
+
+    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])
+        ->name('admin.users.delete');
 });
 
 require __DIR__.'/auth.php';
