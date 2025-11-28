@@ -11,7 +11,7 @@ class AdminUserController extends Controller
     public function index()
     {
         $users = User::orderBy('name')->get();
-        return view('admin.users.index', compact('users'));
+        return view('admin.users', compact('users'));
     }
 
     public function edit(User $user)
@@ -28,7 +28,7 @@ class AdminUserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('admin.users')
             ->with('success', 'Utente aggiornato.');
     }
 
@@ -36,7 +36,7 @@ class AdminUserController extends Controller
     {
         $user->delete();
 
-        return redirect()->route('admin.users.index')
+        return redirect()->route('admin.users')
             ->with('success', 'Utente eliminato.');
     }
 }

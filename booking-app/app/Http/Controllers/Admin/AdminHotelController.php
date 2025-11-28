@@ -11,7 +11,7 @@ class AdminHotelController extends Controller
     public function index()
     {
         $hotels = Hotel::orderBy('name')->get();
-        return view('admin.hotels.index', compact('hotels'));
+        return view('admin.hotels', compact('hotels'));
     }
 
     public function create()
@@ -32,7 +32,7 @@ class AdminHotelController extends Controller
 
         Hotel::create($data);
 
-        return redirect()->route('admin.hotels.index')
+        return redirect()->route('admin.hotels')
             ->with('success', 'Hotel creato.');
     }
 
@@ -54,7 +54,7 @@ class AdminHotelController extends Controller
 
         $hotel->update($data);
 
-        return redirect()->route('admin.hotels.index')
+        return redirect()->route('admin.hotels')
             ->with('success', 'Hotel aggiornato.');
     }
 
@@ -62,7 +62,7 @@ class AdminHotelController extends Controller
     {
         $hotel->delete();
 
-        return redirect()->route('admin.hotels.index')
+        return redirect()->route('admin.hotels')
             ->with('success', 'Hotel eliminato.');
     }
 

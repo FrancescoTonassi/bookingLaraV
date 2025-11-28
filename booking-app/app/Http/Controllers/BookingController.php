@@ -36,9 +36,9 @@ class BookingController extends Controller
 }
 
 // Mostra le prenotazioni dell'utente autenticato
-public function index()
+/*public function index()
     {
         $bookings = Booking::where('user_id', Auth::id())->with('hotel')->get();
         return view('bookings.index', compact('bookings'));
-    }
+    }*/
 }   

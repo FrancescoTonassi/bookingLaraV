@@ -32,7 +32,7 @@ class HotelController extends Controller
             'notes'     => $data['notes'] ?? null,
         ]);
 
-        return redirect()->route('profile.index')
+        return redirect()->route('profile')
             ->with('success', 'Prenotazione effettuata con successo.');
     }
 }
