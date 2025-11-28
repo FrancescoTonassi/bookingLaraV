@@ -15,11 +15,21 @@ class BookingController extends Controller
         // Verifica che l'hotel esista
         $hotel = Hotel::findOrFail($hotel_id);
 
-        // Crea la prenotazione
+        // valida i dati del form
+        $data = $request->validate([
+            'check_in'  => ['required', 'date'],
+            'check_out' => ['required', 'date', 'after_or_equal:check_in'],
+            'guests'    => ['required', 'integer', 'min:1'],
+            'notes'     => ['nullable', 'string'],
+        ]);
+
         Booking::create([
-            'user_id' => Auth::id(),
-            'hotel_id' => $hotel_id,
-            'date' => now(),
+            'user_id'   => Auth::id(),
+            'hotel_id'  => $hotel->id,
+            'check_in'  => $data['check_in'],
+            'check_out' => $data['check_out'],
+            'guests'    => $data['guests'],
+            'notes'     => $data['notes'] ?? null,
         ]);
 
     return redirect()->back()->with('success', 'Prenotazione effettuata con successo!');
