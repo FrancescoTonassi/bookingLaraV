@@ -22,7 +22,7 @@
             <td>{{ $user->role }}</td>
             <td>
                 <a href="{{ route('admin.users.edit', $user) }}">Modifica</a>
-                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display:inline" onsubmit="return confirm('Eliminare questo utente?');">
+                <form method="POST" action="{{ route('admin.users.delete', $user) }}" style="display:inline" onsubmit="return confirm('Eliminare questo utente?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit">Elimina</button>
